@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { useStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { BarChart3, TrendingUp, Lightbulb, Moon, Sun } from 'lucide-react';
+import { BarChart3, TrendingUp, Lightbulb, Moon, Sun, Wallet } from 'lucide-react';
 
 interface DashboardHeaderProps {
   onTabChange: (tab: 'overview' | 'transactions' | 'insights') => void;
@@ -33,7 +33,10 @@ export function DashboardHeader({ onTabChange, activeTab }: DashboardHeaderProps
       <div className="container mx-auto px-4 py-4 md:py-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Finance Dashboard</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground flex items-center">
+              <Wallet className="h-8 w-8 mr-2 text-primary" />
+              Finance Dashboard
+            </h1>
             <p className="text-muted-foreground text-xs md:text-sm mt-1">
               {userRole === 'admin' ? 'Administrator View' : 'Viewer Mode'}
             </p>
