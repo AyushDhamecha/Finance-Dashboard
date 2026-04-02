@@ -6,9 +6,19 @@ import { DashboardCards } from '@/components/dashboard/cards';
 import { DashboardCharts } from '@/components/dashboard/charts';
 import { TransactionsView } from '@/components/transactions/view';
 import { InsightsView } from '@/components/insights/view';
+import { useHydration } from '@/lib/store';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'insights'>('overview');
+  const hydrated = useHydration();
+
+  if (!hydrated) {
+    return (
+      <main className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background">

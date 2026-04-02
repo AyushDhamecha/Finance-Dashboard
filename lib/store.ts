@@ -1,6 +1,8 @@
 'use client';
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { useEffect, useState } from 'react';
 import { Transaction, UserRole, DashboardStats } from '@/types';
 
 interface StoreState {
@@ -87,7 +89,9 @@ const mockTransactions: Transaction[] = [
   },
 ];
 
-export const useStore = create<StoreState>((set, get) => ({
+export const useStore = create<StoreState>()(
+  persist(
+    (set, get) => ({
   // Initial state
   transactions: mockTransactions,
   userRole: 'viewer',
@@ -264,4 +268,42 @@ export const useStore = create<StoreState>((set, get) => ({
       return { status: 'critical', message: 'Expenses exceed income. Review your budget.' };
     }
   },
-}));
+}),
+    {
+      name: 'finance-dashboard-storage',
+      partialize: (state: StoreState) => ({
+        transactions: state.transactions.map(t => {
+          if (t.attachment) {
+            const { data, ...attachmentMeta } = t.attachment;
+            return { ...t, attachment: { ...attachmentMeta, data: '' } };
+          }
+          return t;
+        }),
+        userRole: state.userRole,
+        searchQuery: state.searchQuery,
+        selectedCategory: state.selectedCategory,
+        sortBy: state.sortBy,
+        sortOrder: state.sortOrder,
+        timePeriod: state.timePeriod,
+      }),
+    }
+  )
+);
+
+export function useHydration() {
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const unsub = useStore.persist.onFinishHydration(() => {
+      setHydrated(true);
+    });
+
+    if (useStore.persist.hasHydrated()) {
+      setHydrated(true);
+    }
+
+    return () => unsub();
+  }, []);
+
+  return hydrated;
+}

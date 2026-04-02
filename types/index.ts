@@ -1,5 +1,11 @@
 export type UserRole = 'viewer' | 'admin';
 
+export interface TransactionAttachment {
+  name: string;
+  type: string;
+  data: string; // base64 encoded
+}
+
 export interface Transaction {
   id: string;
   date: string;
@@ -7,6 +13,7 @@ export interface Transaction {
   category: 'salary' | 'food' | 'transport' | 'entertainment' | 'utilities' | 'other';
   amount: number;
   type: 'income' | 'expense';
+  attachment?: TransactionAttachment;
 }
 
 export interface DashboardStats {

@@ -53,7 +53,7 @@ export function DashboardHeader({ onTabChange, activeTab }: DashboardHeaderProps
                 <Button 
                   onClick={toggleRole}
                   variant={userRole === 'admin' ? 'default' : 'outline'}
-                  className="text-xs flex-1 md:flex-initial rounded-xl btn-subtle-scale"
+                  className={`text-xs flex-1 md:flex-initial rounded-xl btn-subtle-scale ${userRole !== 'admin' ? 'btn-outline-orange' : ''}`}
                 >
                   {userRole === 'viewer' ? 'Switch to Admin' : 'Switch to Viewer'}
                 </Button>
@@ -71,7 +71,7 @@ export function DashboardHeader({ onTabChange, activeTab }: DashboardHeaderProps
                 </Button>
                 <Button 
                   variant="outline"
-                  className="text-xs flex-1 md:flex-initial rounded-xl btn-subtle-scale"
+                  className="text-xs flex-1 md:flex-initial rounded-xl btn-subtle-scale btn-outline-orange"
                   disabled
                 >
                   Switch to Admin

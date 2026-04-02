@@ -225,7 +225,10 @@
   }
 
   .dark .btn-outline-orange:hover {
-    @apply border-primary/60 bg-primary/12 shadow-[0_0_16px_rgba(251,146,60,0.2)];
+    background-color: rgb(251 146 60 / 0.12) !important;
+    border-color: rgb(251 146 60 / 0.6) !important;
+    color: var(--foreground) !important;
+    box-shadow: 0 0 16px rgba(251, 146, 60, 0.2);
   }
 
   /* Filter button styles */
@@ -238,7 +241,10 @@
   }
 
   .dark .filter-btn-inactive:hover {
-    @apply border-primary/80 !bg-primary/20 text-foreground shadow-[0_0_16px_rgba(251,146,60,0.4)];
+    background-color: rgb(251 146 60 / 0.2) !important;
+    border-color: rgb(251 146 60 / 0.8) !important;
+    color: var(--foreground) !important;
+    box-shadow: 0 0 16px rgba(251, 146, 60, 0.4);
   }
 
   .filter-btn-active {
