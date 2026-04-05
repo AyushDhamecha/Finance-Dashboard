@@ -6,9 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp, AlertCircle, Target, PieChart as PieChartIcon, TrendingDown, CheckCircle } from 'lucide-react';
 
 export function InsightsView() {
-  const { getDashboardStats, getCategorySpending, transactions, getSpendingTrend, getHighestCategory, getSavingsRate, getBudgetHealth } = useStore();
+  const { getDashboardStats, getCategorySpending, getTimeFilteredTransactions, getSpendingTrend, getHighestCategory, getSavingsRate, getBudgetHealth } = useStore();
   const stats = getDashboardStats();
   const categorySpending = getCategorySpending();
+  const transactions = getTimeFilteredTransactions();
   const spendingTrend = getSpendingTrend();
   const highestCategory = getHighestCategory();
   const savingsRateValue = getSavingsRate();

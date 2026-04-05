@@ -28,6 +28,7 @@ interface StoreState {
   setTimePeriod: (period: 'all' | 'week' | 'month') => void;
 
   // Computed selectors
+  getTimeFilteredTransactions: () => Transaction[];
   getFilteredAndSortedTransactions: () => Transaction[];
   getDashboardStats: () => DashboardStats;
   getCategorySpending: () => Array<{ category: string; amount: number; percentage: number }>;
@@ -170,17 +171,36 @@ export const useStore = create<StoreState>()(
     return sorted;
   },
 
+  getTimeFilteredTransactions: () => {
+    const state = get();
+    let filtered = state.transactions;
+
+    if (state.timePeriod !== 'all') {
+      const now = new Date();
+      const startDate = new Date();
+      if (state.timePeriod === 'week') {
+        startDate.setDate(now.getDate() - 7);
+      } else if (state.timePeriod === 'month') {
+        startDate.setMonth(now.getMonth() - 1);
+      }
+      filtered = filtered.filter((t) => new Date(t.date) >= startDate);
+    }
+
+    return filtered;
+  },
+
   getDashboardStats: () => {
     const state = get();
-    const balance = state.transactions.reduce((acc, t) => {
+    const filtered = state.getTimeFilteredTransactions();
+    const balance = filtered.reduce((acc, t) => {
       return t.type === 'income' ? acc + t.amount : acc - t.amount;
     }, 0);
 
-    const income = state.transactions
+    const income = filtered
       .filter((t) => t.type === 'income')
       .reduce((acc, t) => acc + t.amount, 0);
 
-    const expenses = state.transactions
+    const expenses = filtered
       .filter((t) => t.type === 'expense')
       .reduce((acc, t) => acc + t.amount, 0);
 
@@ -194,7 +214,8 @@ export const useStore = create<StoreState>()(
 
   getCategorySpending: () => {
     const state = get();
-    const expenses = state.transactions.filter((t) => t.type === 'expense');
+    const filtered = state.getTimeFilteredTransactions();
+    const expenses = filtered.filter((t) => t.type === 'expense');
 
     const categoryMap = expenses.reduce(
       (acc, t) => {
@@ -215,15 +236,16 @@ export const useStore = create<StoreState>()(
 
   getSpendingTrend: () => {
     const state = get();
+    const filtered = state.getTimeFilteredTransactions();
     const now = new Date();
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const lastMonthExpenses = state.transactions
+    const lastMonthExpenses = filtered
       .filter((t) => t.type === 'expense' && new Date(t.date) >= lastMonth && new Date(t.date) < currentMonthStart)
       .reduce((acc, t) => acc + t.amount, 0);
 
-    const currentMonthExpenses = state.transactions
+    const currentMonthExpenses = filtered
       .filter((t) => t.type === 'expense' && new Date(t.date) >= currentMonthStart)
       .reduce((acc, t) => acc + t.amount, 0);
 
@@ -245,11 +267,12 @@ export const useStore = create<StoreState>()(
 
   getSavingsRate: () => {
     const state = get();
-    const income = state.transactions
+    const filtered = state.getTimeFilteredTransactions();
+    const income = filtered
       .filter((t) => t.type === 'income')
       .reduce((acc, t) => acc + t.amount, 0);
 
-    const expenses = state.transactions
+    const expenses = filtered
       .filter((t) => t.type === 'expense')
       .reduce((acc, t) => acc + t.amount, 0);
 

@@ -18,7 +18,8 @@ import {
 } from 'recharts';
 
 export function DashboardCharts() {
-  const { transactions } = useStore();
+  const { getTimeFilteredTransactions } = useStore();
+  const transactions = getTimeFilteredTransactions();
 
   // Prepare balance trend data
   const balanceTrendData = useMemo(() => {
